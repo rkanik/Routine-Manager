@@ -25,6 +25,11 @@ export default new Router({
       path: '/emptyroom',
       name: 'emptyroom',
       component: () => import('../views/EmptyRoom.vue')
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('../views/Settings.vue')
     }
   ]
 })
