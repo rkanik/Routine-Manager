@@ -1,29 +1,41 @@
 <template>
-    <div class="signedBox pt-1" v-bind:class="{'light-colors':lightTheme}">
+    <div class="signedBox pt-1">
         <div class="container">
             <div class="row text-light">
-                <div class="col-md-3 col-sm-6">
-                    <div class="col">
+
+                <div class="col">
+                    <div class="col-box">
+                        <label>Overview</label>
+                        <p class="lead">
+                            <span>Course: </span><strong>{{5}}</strong><span> | </span>
+                            <span>Class: </span><strong>3 days</strong><span> | </span>
+                            <span>Credit Taken: </span><strong>12</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="col-box">
                         <label>Name</label>
-                        <p class="lead">{{signedData.Name}}</p>
+                        <p class="lead">{{userName}}</p>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="col">
+
+                <div class="col" v-if="userEmail!=''">
+                    <div class="col-box">
                         <label>Email</label>
-                        <p class="lead" v-if="signedData.Email">{{signedData.Email}}</p>
+                        <p class="lead" >{{userEmail}}</p>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="col">
-                        <label>Semester</label>
-                        <p class="lead"><span>Level: </span>{{signedData.Level}} <span>Term: </span>{{signedData.Term}}</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="col">
-                        <label>Section</label>
-                        <p class="lead"><span>Section: </span>{{signedData.Section}}</p>
+                
+                <div class="col">
+                    <div class="col-box">
+                        <label>Semester info</label>
+                        <p class="lead">
+                            <span>Level: </span><strong>{{userLevel}}</strong><span> | </span>
+                            <span>Term: </span><strong>{{userTerm}}</strong><span> | </span>
+                            <span>Section: </span><strong>{{userSection}}</strong>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -45,6 +57,8 @@
 </template>
 <script>
 
+import { mapGetters } from "vuex";
+
 export default {
     name:'SignedBox',
     props:{
@@ -64,10 +78,18 @@ export default {
     },
     created(){
         /** Fetch Theme **/
-        this.FetchTheme();
-        this.fetchViewType();
+        //this.FetchTheme();
+        //this.fetchViewType();
+    },
+    computed:{
+        ...mapGetters([
+            'userName','userEmail',
+            'userLevel','userTerm',
+            'userSection'
+        ]),
     },
     methods:{
+
         OnClickTeachers(){
             if( this.tabTeachers ){
                 bus.$emit('CollapseTeachers');
@@ -139,6 +161,7 @@ export default {
     padding: 0 1rem;
     position: relative;
     width: 100%;
+    box-shadow: 0 0 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.2);
     box-sizing: border-box;
     .col-md-3{
         margin-top: 0.2rem;
@@ -148,7 +171,7 @@ export default {
     .col-md-3:last-child{
         padding-right: 1rem;
     }
-    .col{
+    .col-box{
         background-color: #202020;
         padding: 1rem;height: 100%;
         box-shadow: 0 0 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.2);
@@ -163,6 +186,9 @@ export default {
         }
         p{
             font-size: 1.1em;
+        }
+        span{
+            color: #bdbdbd;
         }
     }
     .col:first-child{

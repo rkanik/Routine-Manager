@@ -1,14 +1,14 @@
 <template>
-    <div v-bind:class="{'light-colors':lightTheme}">
+    <div class="signupModal">
         <div class="overlay show"></div>
         <div class="mod">
-            <div v-if="showLoader" class="loader">
+            <!-- <div v-if="showLoader" class="loader">
                 <Loader1 class="loading"/>
-            </div>
-            <img class="close" @click="closeModal()" src="../../../assets/svg/close.svg">
+            </div> -->
+            <img class="close" @click="hideSignup" src="../../assets/svg/close.svg">
             <div class="content">
                 <div class="text-center">
-                    <h5 class="lead mt-3">Update your information</h5>
+                    <h5 class="lead mt-3">Create your account</h5>
                     <h3 class="lead2 grey-3">Please fill up the form correctly</h3>
                 </div>
                 <hr>
@@ -20,20 +20,20 @@
                         </button>
                     </div>
                     <div class="form-group">
-                        <input v-bind:class="{disabled:data.btn==='UPDATE'}" type="text" v-model="data.ID" class="form-control" placeholder="Enter your ID">
+                        <input type="text" class="form-control" placeholder="Enter your ID">
                     </div>
                     <div class="form-group">
-                        <input type="text" v-model="data.Name" class="form-control" placeholder="Enter your Name" >
+                        <input type="text" class="form-control" placeholder="Enter your Name" >
                     </div>
                     <div class="form-group">
-                        <input type="email" class="form-control" v-model="data.Email" aria-describedby="helpId" placeholder="Enter email address">
+                        <input type="email" class="form-control" aria-describedby="helpId" placeholder="Enter email address">
                         <small id="helpId" v-bind:class="{'red-3':emError}" class="form-text text-muted ml-4">{{emMes}}</small>
                     </div>
                     <div class="form-group">
                         <div class="arrow_down">
-                            <img src="../../../assets/svg/arrow_down.svg">
+                            <img src="../../assets/svg/arrow_down.svg">
                         </div>
-                        <select class="form-control" v-model="data.Level">
+                        <select class="form-control">
                             <option value="NONE" selected>Select Level</option>
                             <option value="L1">Level - 1</option>
                             <option value="L2">Level - 2</option>
@@ -43,9 +43,9 @@
                     </div>
                     <div class="form-group">
                         <div class="arrow_down">
-                            <img src="../../../assets/svg/arrow_down.svg">
+                            <img src="../../assets/svg/arrow_down.svg">
                         </div>
-                        <select class="form-control" v-model="data.Term">
+                        <select class="form-control">
                             <option value="NONE" selected>Select Term</option>
                             <option value="T1">Term - 1</option>
                             <option value="T2">Term - 2</option>
@@ -53,47 +53,46 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" v-model="data.Section" placeholder="Enter your Section">
+                        <input type="text" class="form-control" placeholder="Enter your Section">
                     </div>
-                    <button class="btn btn-outline-info btn-sm mt-2 ml-2" @click="OnClickSave()" type="button">{{btn}}</button>
+                    <button class="btn btn-outline-info btn-sm mt-2 ml-2" @click="OnClickSave()" type="button">SIGNUP</button>
                 </form>
             </div>
         </div>
     </div>
 </template>
 <script>
-/** IMPORTS */
-import {bus} from "../../../main";
-import db from "../../../firebase/firebaseInit";
+import { mapMutations } from 'vuex';
 
 /** COMPONENTS */
-import Loader1 from "../../Loaders/Loader1";
+//import Loader1 from "../../Loaders/Loader1";
 
 export default {
     name: "UpdateInfo",
     props: {
         data:{}
     },
-    components:{Loader1},
+    components:{},
     data() {
         return {
             /** Booleans */
-            error: false,showLoader:false,
-            lightTheme:false,emError:false,
+            error: false,emError:false,
 
             /** Objects */
             courses: {},
 
             /** Strings */
-            btn:this.data.btn,
             emMes:'You can leave this empty',
             
         };
     },
     created(){
-        this.FetchTheme();
+        //this.FetchTheme();
     },
     methods: {
+
+        ...mapMutations(['hideSignup']),
+
         OnClickSave() {
             if(this.CheckForError()){this.error=true;}
             else if( this.data.Email !== '' && !this.ValidateEmail(this.data.Email) ){
@@ -124,9 +123,6 @@ export default {
         getCourseCodes(){
             return this.data[this.data.level+this.data.term].map(x=>{return x.Code+'('+this.data.section.toUpperCase()+')'})
         },
-        closeModal() {
-            bus.$emit("CloseUpdateModal");
-        },
         FixTheme(x){
             this.lightTheme=x;
             localStorage.setItem('Theme',x);
@@ -144,7 +140,7 @@ export default {
 .overlay {
     position: fixed;top: 0;left: 0;
     display: none;height: 100%;width: 100%;
-    z-index: 10;background-color: rgba(0, 0, 0, 0.65);
+    z-index: 20;background-color: rgba(0, 0, 0, 0.65);
 }
 .show {
     display: block;
@@ -156,7 +152,7 @@ export default {
     left: 0;top: 0;
     border-radius: 4px;
     background-color: rgba(255, 255, 255, 0.5);
-    z-index: 12;
+    z-index: 30;
     .loading{
         margin-top: calc(50% - 20px);
     }
@@ -166,7 +162,7 @@ export default {
     transform: translate(-50%, -50%);
     border-radius: 4px;transition: all 0.3s ease-in-out;
     padding: 1rem;padding-bottom: 2rem;
-    top: 50%;left: 50%;z-index: 11;
+    top: 50%;left: 50%;z-index: 20;
     height: min-content;width: 30rem;
     background-color: #313131;
     form {
@@ -190,6 +186,10 @@ export default {
         }
     }
 }
+hr{
+    border-color: #424242;
+}
+
 .lead2{
     font-weight: 400;
 }

@@ -11,7 +11,7 @@
         <img src="../../assets/svg/dashboard.svg" class="icon">
         <p class="">Home</p>
       </router-link>
-      <router-link tag="li" to="/me">
+      <router-link tag="li" to="/me" v-if="isSignedIn">
         <img src="../../assets/svg/profile.svg" class="icon">
         <p class="">My profile</p>
       </router-link>
@@ -56,7 +56,7 @@ export default {
     ...mapMutations(['onclickSidebarToggler'])
   },
   computed:{
-    ...mapGetters(['isSidebarCollapsed'])
+    ...mapGetters(['isSidebarCollapsed','isSignedIn'])
   }
 }
 
@@ -68,6 +68,7 @@ export default {
     background-color: #212121;
     height: 100vh;
     transition: width 0.3s ease-in-out;
+    box-shadow: 0 0 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.2);
   }
 
   .menu-toggler{
@@ -77,7 +78,7 @@ export default {
       overflow: hidden;
       height: 2.8rem;
       width: 2.8rem;
-      padding: 0.6rem;
+      padding: 0.5rem;
       padding-left: 0.7rem;
       cursor: pointer;
       transition: padding , width , border-radius 0.2s ease-in;
@@ -100,13 +101,13 @@ export default {
     padding: 0;
     li{
       cursor: pointer;
-      padding: 0.6rem 1.2rem;
+      padding: 0.5rem 1.2rem;
       display: grid;overflow: hidden;
       border-left: 4px solid rgba(0, 0, 0, 0);
       grid-template-columns: min-content auto;
       .icon{
-        width: 1rem;
-        margin-top: 0.2rem;
+        width: 0.9rem;
+        margin-top: 0.3rem;
         transition: width 0.2s ease-in-out;
         opacity: 0.7;
       }
@@ -114,8 +115,9 @@ export default {
         color:#bdbdbd;
         min-width: 12rem;
         padding: 0;margin: 0;
-        margin-left: 1.3rem;
+        margin-left: 1.4rem;
         user-select: none;
+        font-size: 1em;
       }
     }
     li:hover,.router-link-exact-active{
@@ -139,7 +141,7 @@ export default {
     .router-link-group{
       li{
         .icon{
-          width: 1.3rem;
+          width: 1.2rem;
         }
       }
     }

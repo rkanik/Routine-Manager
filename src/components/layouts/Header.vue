@@ -1,16 +1,19 @@
 <template>
-    <div id="header" class="text-left text-light">
-        <div class="container">
+    <div id="header" class="text-left">
+        <div class="container overflow-hidden position-relative h-100">
             <h4 class="pt-3 app-name">Routine Manager CSE <span class="beta orng-5">BETA{{version}}</span></h4>
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Student ID" aria-describedby="button-addon2">
+            <div class="input-group" v-if="!isSignedIn" v-bind:class="{inputError:inputError}" >
+                <input type="text" v-model="inputId" @keyup="onKeyUp" class="form-control" placeholder="Student ID" aria-describedby="btnSignin">
                 <div class="input-group-append">
-                    <button class="btn btn-primary" type="button" id="button-addon2">SIGNIN</button>
+                    <button @click="onClickSignin()" class="btn btn-primary" type="button" id="btnSignin">SIGNIN</button>
                 </div>
             </div>
-            <div class="SignedIn"> 
-                <p class="lead">{{signedId}}</p>
-                <button class="btn btn-outline-danger btn-sm">Logout</button>
+            <div class="SignedIn" v-if="isSignedIn"> 
+                <p class="lead">{{userId}}</p>
+                <button class="btn btn-outline-danger btn-sm" @click="onClickLogout">Logout</button>
+            </div>
+            <div class="progress bSecondary" v-bind:class="{animate:isLoading}">
+                <span></span>
             </div>
         </div>
     </div>
@@ -20,17 +23,15 @@
 
 /** IMPORTS */
 import pac from "../../../package.json";
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
     name:'Header',
     data(){
         return{
-            signedId:'',inputId:'',
-            isSignedIn:false,
-            lightTheme:false,
-            tabCollapsed:true,
+            inputId:'',
             version:pac.version,
-            active:'Student'
+            inputError:false
         }
     },
     created(){
@@ -45,7 +46,13 @@ export default {
         //     this.signedId=JSON.parse(localStorage.signedData).ID;
         // }
     },
+    computed:{
+        ...mapGetters(['isSignedIn','isLoading','userId']),
+
+    },
     methods:{
+        ...mapMutations(['onClickLogout']),
+
         onTabItemSelected(x){
             this.active = x ;
             bus.$emit(x,x);
@@ -55,24 +62,23 @@ export default {
                 this.tabCollapsed=false;
             }else(this.tabCollapsed=true)
         },
+
+        onKeyUp( event ){
+            if(  this.inputId.trim() !== ''  ){
+                this.inputError = false
+                if( event.keyCode === 13 ){
+                    this.$store.dispatch('signinUser',this.inputId )
+                    this.inputId = '';
+                }
+            }else{this.inputError=true}
+        },
         onClickSignin(){
-            if( this.inputId.trim()!==''){bus.$emit('showLoading');bus.$emit('SigninStudent',this.inputId.trim());}
-        },
-        onClickLogout(){
-            
-            localStorage.removeItem('signedData');
-            this.signedId='',this.inputId='',this.isSignedIn=false;
-            bus.$emit('loggedOut');
-        },
-        FixTheme(x){
-            this.lightTheme=x;
-            localStorage.setItem('Theme',x);
-        },
-        FetchTheme(){
-            if(localStorage.getItem('Theme')!==undefined){
-                if(localStorage.getItem('Theme')==='true'){
-                this.FixTheme(true)}else{this.FixTheme(false);}   
-            }else{this.FixTheme(false)}
+            if( this.inputId.trim() !== '' ){
+                this.inputError = false
+                this.$store.dispatch('signinUser',this.inputId )
+                this.inputId = '';
+            }
+            else{this.inputError = true}
         }
     }
 }
@@ -94,6 +100,29 @@ export default {
         display: none;
     }
     .menu-toggle{display: none}
+    .progress {
+        display: block;
+        height: 2px;width: 100%;
+        position: absolute;
+        left: 0;right: 0;bottom: 0.2rem;
+        background-color: #191919;
+        span {
+            display: none;position: absolute;
+            top: 0;left: 0;width: 100%;height: 100%;
+            background-color: #313131;
+        }
+    }
+    .animate {
+        span {
+            display: block;width: 50%;
+            animation: progress_anim 1s linear infinite;
+        }
+    }
+}
+@keyframes progress_anim {
+    0% {width: 0%;left: 0}
+    50% {left: 0;width: 50%}
+    100% {width: 10%;left: 90%}
 }
 .rounded{
     border-radius: 0.5rem !important;
@@ -128,6 +157,14 @@ export default {
     .btn-primary:hover{
         border-color: #00796b;
         background-color: #00796b;
+    }
+}
+
+.inputError{
+    input{border-color: #f44336 !important}
+    button{
+        border-color: #f44336 !important;
+        background-color: #f44336 !important
     }
 }
 

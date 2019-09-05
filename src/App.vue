@@ -13,23 +13,32 @@
         </div>
       </div>
     </div>
+    <div class="modals">
+      <modal-signup v-if="signupModal"/>
+    </div>
   </div>
 </template>
 
 <script>
 
 /** Components */
-import Sidebar from "./components/layouts/Sidebar";
-import Header from "./components/layouts/Header";
+import Sidebar      from "./components/layouts/Sidebar";
+import Header       from "./components/layouts/Header";
+import SignupModal  from "./components/modals/SignupModal";
+import { mapGetters } from 'vuex';
 
 export default {
   name:"app",
   components:{
     'side-bar':Sidebar,
-    'c-header':Header
+    'c-header':Header,
+    'modal-signup':SignupModal
   },
   created(){
     this.$store.dispatch('onCreateApp');
+  },
+  computed:{
+    ...mapGetters(['signupModal'])
   }
 }
 </script>
@@ -46,6 +55,7 @@ export default {
     font-family: 'Quicksand', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: #e0e0e0;
   }
 
   /** Components Styles */

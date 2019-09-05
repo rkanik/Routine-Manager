@@ -1,12 +1,14 @@
 <?php
-
 class Database{
     public function connect(){
-        require_once('./defined.php');
+        $server = 'localhost';
+        $username = 'root';
+        $password = '';
+        $darabase = 'routine-cse';
         try {
-            $conn = new PDO("mysql:host=$SERVER;dbname=$DATABASE", $USERNAME, $PASSWORD);
+            $conn = new PDO("mysql:host=$server;dbname=$darabase", $username, $password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo 'connected';
+            return $conn;
         }catch(PDOException $e){
             var_dump($e);
         }
