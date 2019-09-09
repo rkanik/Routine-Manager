@@ -20,21 +20,22 @@
                         </button>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Enter your ID">
+                        <input type="text" v-model="formData.id" class="form-control" placeholder="Enter your ID">
+                        <small id="helpId" v-if="idError" v-bind:class="{'red-3':idError}" class="form-text text-muted ml-4">{{idMes}}</small>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Enter your Name" >
+                        <input type="text" v-model="formData.name" class="form-control" placeholder="Enter your Name" >
                     </div>
                     <div class="form-group">
-                        <input type="email" class="form-control" aria-describedby="helpId" placeholder="Enter email address">
+                        <input type="email" v-model="formData.email" class="form-control" aria-describedby="helpId" placeholder="Enter email address">
                         <small id="helpId" v-bind:class="{'red-3':emError}" class="form-text text-muted ml-4">{{emMes}}</small>
                     </div>
                     <div class="form-group">
                         <div class="arrow_down">
                             <img src="../../assets/svg/arrow_down.svg">
                         </div>
-                        <select class="form-control">
-                            <option value="NONE" selected>Select Level</option>
+                        <select class="form-control" v-model="formData.level">
+                            <option value="none" selected>Select Level</option>
                             <option value="L1">Level - 1</option>
                             <option value="L2">Level - 2</option>
                             <option value="L3">Level - 3</option>
@@ -45,15 +46,15 @@
                         <div class="arrow_down">
                             <img src="../../assets/svg/arrow_down.svg">
                         </div>
-                        <select class="form-control">
-                            <option value="NONE" selected>Select Term</option>
+                        <select class="form-control" v-model="formData.term">
+                            <option value="none" selected>Select Term</option>
                             <option value="T1">Term - 1</option>
                             <option value="T2">Term - 2</option>
                             <option value="T3">Term - 3</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Enter your Section">
+                        <input type="text" v-model="formData.section" class="form-control" placeholder="Enter your Section">
                     </div>
                     <button class="btn btn-outline-info btn-sm mt-2 ml-2" @click="OnClickSave()" type="button">SIGNUP</button>
                 </form>
@@ -68,48 +69,57 @@ import { mapMutations } from 'vuex';
 //import Loader1 from "../../Loaders/Loader1";
 
 export default {
-    name: "UpdateInfo",
-    props: {
-        data:{}
-    },
-    components:{},
+    name: "SignupModal",
     data() {
         return {
             /** Booleans */
             error: false,emError:false,
+            idError:false,
 
             /** Objects */
+            formData:{
+                id:'',name:'',email:'',
+                level:'none',term:'none',section:''
+            },
             courses: {},
 
             /** Strings */
             emMes:'You can leave this empty',
+            idMes:"Student id should be like XXX-XX-XXXX"
             
         };
     },
     created(){
-        //this.FetchTheme();
+        this.formData.id = sessionStorage.temp_id;
     },
     methods: {
 
         ...mapMutations(['hideSignup']),
 
         OnClickSave() {
+
             if(this.CheckForError()){this.error=true;}
-            else if( this.data.Email !== '' && !this.ValidateEmail(this.data.Email) ){
+            else if( this.formData.email !== '' && !this.ValidateEmail(this.formData.email) ){
                 this.emMes = 'Please enter a valid email address';this.emError=true;}
             else{
-                this.showLoader=true;
+
                 this.emMes = 'You can leave this empty'
                 this.emError=false;this.error=false
-                if(this.btn==='SAVE'){bus.$emit("SaveStudent")
-                }else if(this.btn==='UPDATE'){bus.$emit("UpdateStudent")}
+                this.$store.dispatch('initSignup',this.formData);
             }
         },
         CheckForError(){
             let err = false ;
-            if( this.data.ID.trim() === '' || this.data.Name.trim()==='' || this.data.Section.trim()===''){
+            if(!this.validateStudentId(this.formData.id)){
+                this.idError = true;
                 err = true ;
-            }else if( this.data.Level === 'NONE' || this.data.Term === 'NONE' ){
+            }else{
+                this.idError = false;
+                err = false ;
+            }
+            if( this.formData.id.trim() === '' || this.formData.name.trim()==='' || this.formData.section.trim()===''){
+                err = true ;
+            }else if( this.formData.level === 'none' || this.formData.term === 'none' ){
                 err = true ;
             }else{
                 err = false ;
@@ -120,18 +130,12 @@ export default {
             var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(String(email).toLowerCase());
         },
+        validateStudentId(id){
+            let re = /^[0-9][0-9][0-9][-][0-9][0-9][-][0-9]+$/
+            return re.test(id);
+        },
         getCourseCodes(){
-            return this.data[this.data.level+this.data.term].map(x=>{return x.Code+'('+this.data.section.toUpperCase()+')'})
-        },
-        FixTheme(x){
-            this.lightTheme=x;
-            localStorage.setItem('Theme',x);
-        },
-        FetchTheme(){
-            if(localStorage.getItem('Theme')!==undefined){
-                if(localStorage.getItem('Theme')==='true'){
-                this.FixTheme(true)}else{this.FixTheme(false);}   
-            }else{this.FixTheme(false)}
+            return this.formData[this.formData.level+this.formData.term].map(x=>{return x.Code+'('+this.formData.section.toUpperCase()+')'})
         }
     }
 };

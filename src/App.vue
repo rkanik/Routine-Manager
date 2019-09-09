@@ -58,6 +58,11 @@ export default {
     color: #e0e0e0;
   }
 
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#171717}
+::-webkit-scrollbar-thumb{background:#171717}
+::-webkit-scrollbar-thumb:hover{background:#196961}
+
   /** Components Styles */
   .main-row{
     display: grid;

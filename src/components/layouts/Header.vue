@@ -68,7 +68,6 @@ export default {
                 this.inputError = false
                 if( event.keyCode === 13 ){
                     this.$store.dispatch('signinUser',this.inputId )
-                    this.inputId = '';
                 }
             }else{this.inputError=true}
         },
@@ -76,7 +75,6 @@ export default {
             if( this.inputId.trim() !== '' ){
                 this.inputError = false
                 this.$store.dispatch('signinUser',this.inputId )
-                this.inputId = '';
             }
             else{this.inputError = true}
         }

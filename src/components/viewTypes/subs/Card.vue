@@ -1,31 +1,39 @@
 <template>
-    <div class="card">
+    <div class="card p-0 text-left">
         <div class="card-top">
-            <h5 class="card-title mb-0">{{data.title}}</h5>
+            <h5 class="card-title mb-0">{{data.Title}}</h5>
             <div class="card-overlay"></div>
-            <img :src='require(`../../../assets/images/${data.img}`)' class="card-img-top">
+            <img :src='imgSrc' class="card-img-top">
         </div>
         <div class="card-body pt-2">
-            <p class="lead"><span class="accent">Code: </span>CSE101</p>
-            <p class="lead"><span class="accent">Time: </span>{{data.time}}</p>
-            <p class="lead"><span class="accent">Room: </span>{{data.room}}</p>
+            <p class="lead"><span class="accent">Code: </span>{{data.Course}}</p>
+            <p class="lead"><span class="accent">Time: </span>{{data.Time}}</p>
+            <p class="lead"><span class="accent">Room: </span>{{data.Room}}</p>
             <hr>
-            <p class="lead"><span class="accent">Teacher: </span>{{data.teacher}}</p>
+            <span class="text-info">Teacher</span>
+            <p class="lead"><span class="accent">Initial: </span>{{data.Teacher}}</p>
+            <p class="lead" v-if="data.Teacher"><span class="accent">Name: </span>{{data.Name}}</p>
         </div>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
     name:'card',
-    props:['data']
+    props:{
+        data:Object,
+        imgSrc:String
+    },
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .card{
-        width: 16rem;min-height: 20rem;
-        background-color: #212121;border: none;
+        width: 16rem !important;
+        min-height: 20rem;
+        background-color: #212121;
+        border: none  !important;
         box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.2);
         color: #e0e0e0;overflow: hidden;
         .card-top{
@@ -68,6 +76,9 @@ export default {
             }
             hr{
                 border-color: #313131;
+            }
+            .text-info{
+                font-size: 0.9em;
             }
         }
         

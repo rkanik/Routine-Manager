@@ -14,6 +14,7 @@ const state = {
     theme : 'dark' , 
     viewType : 'table' ,
     uToken : '',
+    sfExpanded:'Expand',
 
     /** Objects */
     userData:{},
@@ -26,6 +27,8 @@ const getters = {
     isSignedIn : state => state.isSignedIn,
     isLoading : state => state.isLoading,
     signupModal : state => state.signupModal,
+    viewType : state => state.viewType,
+    sfExpanded : state => state.sfExpanded,
 
     userId : state => state.userData.id,
     userName : state => state.userData.name,
@@ -40,12 +43,16 @@ const mutations = {
     /** Stoping and starting loading */
     startLoading : state => state.isLoading = true,
     stopLoading : state => state.isLoading = false,
-
-    setUserData : ( state , data ) => state.userData = data ,
-
+    setSignedIn: state => state.isSignedIn = localStorage.isSignedIn = true ,
+    setUserData :( state , data ) => state.userData = data ,
+    setuToken :(state,token ) => localStorage.uToken = token,
     /** Showing and hiding signupModal */
     showSignup : state => state.signupModal = true,
-    hideSignup : state => state.signupModal = false,
+    hideSignup : state => {state.signupModal=false,sessionStorage.removeItem('temp_id')},
+    setViewType:(state,type)=>{state.viewType=localStorage.viewType = type},
+    onClickSFormExpand:(state)=>{state.sfExpanded==='Expand'?state.sfExpanded='Collapse':state.sfExpanded='Expand'},
+
+    onCreateProfile: state => {if(!state.isSignedIn){router.push('/')}},
 
     onSignedIn : ( state , data ) => {
         /** setting isSigned in true */
@@ -59,10 +66,16 @@ const mutations = {
         router.push('/me');
     },
 
+    onChangeSwitch: ( state , data ) => {
+        let isChecked=data.$event.target.checked;
+        switch( data.name ){
+            case 'sidebar':
+                isChecked?state.isSidebarCollapsed=true:state.isSidebarCollapsed=false
+        }
+    }, 
+
     onQuickSignedin: ( state , data ) => {
-        state.userData = data;
-        sessionStorage.userData = JSON.stringify(data);
-        router.push('/me')
+        state.userData = data;sessionStorage.userData = JSON.stringify(data);router.push('/me')
     },
 
     onClickLogout: state => {
@@ -82,6 +95,7 @@ const mutations = {
         localStorage.isSidebarCollapsed = state.isSidebarCollapsed;
     },
     onCreateApp: state  => {
+
         /** Fixing theme*/
         localStorage.theme !== undefined ? 
             state.theme = localStorage.theme :
@@ -109,15 +123,17 @@ const actions = {
     async onCreateApp( { commit , dispatch } ){
 
         /** Fixing Usage Tokon */
-        if( localStorage.uToken !== undefined )
+        if( localStorage.uToken !== ( undefined || 'undefined' || null ) )
             state.uToken = localStorage.uToken
         else{
             let uToken = uuidv4();
             localStorage.uToken = state.uToken = uToken ;
-            dispatch('saveNewVisitor', uToken );
+            dispatch('saveNewVisitor');
         }
 
+
         await commit( 'onCreateApp' );
+        commit( 'routineOnCreateApp' );
 
 
         /** Fixing userDatas */
@@ -131,7 +147,9 @@ const actions = {
             }else{
                 dispatch('quickSignin')
             }
-        }else if(sessionStorage.lastVisited === undefined){
+        }
+        
+        if(sessionStorage.lastVisited === undefined){
             sessionStorage.lastVisited = new Date();
             dispatch('updateLastVisitedByToken');
         }else if( ex.diffInSec(new Date(sessionStorage.lastVisited)) > 60 ){

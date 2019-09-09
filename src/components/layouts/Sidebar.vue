@@ -17,15 +17,15 @@
       </router-link>
       <router-link tag="li" to="/emptyroom">
         <img src="../../assets/svg/emptyroom.svg" class="icon">
-        <p class="">Empty room</p>
+        <p class="">Empty rooms</p>
       </router-link>
       <router-link tag="li" to="/teachers">
         <img src="../../assets/svg/teacher.svg"  class="icon">
-        <p class="">Techer finder</p>
+        <p class="">Teachers</p>
       </router-link>
       <router-link tag="li" to="/qs">
         <img src="../../assets/svg/dashboard.svg" class="icon">
-        <p class="">Qustions bank</p>
+        <p class="">Qustions</p>
       </router-link>
       <hr>
       <router-link tag="li" to="/settings">
@@ -64,13 +64,10 @@ export default {
 
 <style lang="scss" scoped>
   .sidebar{
-    width: 14rem;
-    background-color: #212121;
-    height: 100vh;
-    transition: width 0.3s ease-in-out;
+    width: 14rem;background-color: #212121;
+    height: 100vh;transition: width 0.3s ease-in-out;
     box-shadow: 0 0 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.2);
   }
-
   .menu-toggler{
     transition: padding 0.2s ease-in-out;
     .circle{
@@ -105,6 +102,7 @@ export default {
       display: grid;overflow: hidden;
       border-left: 4px solid rgba(0, 0, 0, 0);
       grid-template-columns: min-content auto;
+      transition: background-color 0.3s,border-color 0.3s;
       .icon{
         width: 0.9rem;
         margin-top: 0.3rem;
@@ -122,7 +120,7 @@ export default {
     }
     li:hover,.router-link-exact-active{
       background-color: #313131;
-      border-left: 4px solid teal;
+      border-color: teal;
     }
   }
 

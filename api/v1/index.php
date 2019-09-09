@@ -20,14 +20,15 @@ if( isset($_GET['code']) ){
         /** Update lastvisited by userId */
         case '110':
             $act->updateLastVisitedByUserId( $_POST['id'] );
+            $res = $act->getUserToken($_POST['id']);
             break;
         /** create new Visitor */
         case '101':
             $res = $act->createNewVisitor();
             break;
-        /** Merge userId with uToken */
-        case '102':
-            $act->mergeUserId();
+        /** Signup new user */
+        case '120':
+            $res = $act->signupUser();
             break;
         default:
             break;

@@ -10,6 +10,31 @@ class Actions {
         $this->conn = $db->connect();
     }
 
+    function signupUser(){
+        $sql = "INSERT INTO users (userId, uToken, ip, isp, latitude, longitude, city, postCode, createdAt, updatedAt)
+            VALUES (:id, :uToken, :ip, :isp, :latitude, :longitude, :city, :postCode, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+        $stmt = $this->conn->prepare($sql);
+        foreach ($_POST as $key => &$value) {
+            $stmt -> bindParam( $key , $value );
+        }
+        try {$stmt->execute();return 'succsess';
+        } catch (\Throwable $th) {
+            if( $this->isUserIdNull() ){
+                $this->updateUserId(array("id"=>$_POST['id'],'uToken'=>$_POST['uToken']));
+            }else{
+                return array('error'=>true,"message"=>'TOKEN_EXIST',"data"=>$th);
+            }
+        }
+        return $_POST ;
+    }
+
+    private function updateUserId( $data ){
+        $sql = "UPDATE users SET userId = :id WHERE uToken = :uToken";
+        $stmt = $this->conn->prepare($sql);
+        foreach ($data as $key => &$value){$stmt -> bindParam( $key , $value );}
+        $stmt->execute();
+    }
+
     private function isUserIdNull(){
         $sql = "SELECT userId from users WHERE uToken = :uToken";
         $stmt = $this->conn->prepare($sql);
@@ -20,18 +45,22 @@ class Actions {
         else{return false;}
     }
 
-    function mergeUserId(){
-
-        if( $this->isUserIdNull() ){
-            $sql = "UPDATE users SET userId = :id WHERE uToken = :uToken";
-            $stmt = $this->conn->prepare($sql);
-            foreach ($_POST as $key => &$value){$stmt -> bindParam( $key , $value );}
-            $stmt->execute();
-            $this->updateLastVisitedByUserId($_POST['id']);
-        }else if( $this->isUserIdExist() ){
-            $this->updateLastVisitedByUserId($_POST['id']);
-        }
+    function getUserToken( $id ){
+        $sql = "SELECT uToken from users WHERE userId = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $id );
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
+
+    // function mergeUserId(){
+    //     if( $this->isUserIdNull() ){
+    //         $this->updateUserId($_POST);
+    //         $this->updateLastVisitedByUserId($_POST['id']);
+    //     }else if( $this->isUserIdExist() ){
+    //         $this->updateLastVisitedByUserId($_POST['id']);
+    //     }
+    // }
 
     private function isUserIdExist(){
         $sql = 'SELECT userId FROM users WHERE userId = :id';

@@ -2,14 +2,12 @@
     <div class="signedBox pt-1">
         <div class="container">
             <div class="row text-light">
-
                 <div class="col">
                     <div class="col-box">
                         <label>Overview</label>
                         <p class="lead">
                             <span>Course: </span><strong>{{5}}</strong><span> | </span>
                             <span>Class: </span><strong>3 days</strong><span> | </span>
-                            <span>Credit Taken: </span><strong>12</strong>
                         </p>
                     </div>
                 </div>
@@ -21,7 +19,7 @@
                     </div>
                 </div>
 
-                <div class="col" v-if="userEmail!=''">
+                <div class="col" v-if="userEmail!=null">
                     <div class="col-box">
                         <label>Email</label>
                         <p class="lead" >{{userEmail}}</p>
@@ -44,8 +42,8 @@
             <div class="quickSettings text-center">
                 <div class="btn-con">
                     <button @click="showEditCourseModal()">Edit Course</button>
-                    <button @click="changeViewType('Table')" v-bind:class="{active:tableViewActive}">Table View</button>
-                    <button @click="changeViewType('Tab')" v-bind:class="{active:tabViewActive}">Card View</button>
+                    <button @click="changeViewType('table')" :class="{active:viewType=='table'}">Table View</button>
+                    <button @click="changeViewType('tab')" :class="{active:viewType=='tab'}">Card View</button>
                     <button @click="OnClickUpdateInfo()">Update info</button>
                     <button @click="OnClickTeachers()" v-bind:class="{active:tabTeachers}">Teachers</button>
                     <button class="active" @click="ChangeTheme()">{{theme}}</button>
@@ -57,7 +55,7 @@
 </template>
 <script>
 
-import { mapGetters } from "vuex";
+import { mapGetters , mapMutations } from "vuex";
 
 export default {
     name:'SignedBox',
@@ -85,11 +83,11 @@ export default {
         ...mapGetters([
             'userName','userEmail',
             'userLevel','userTerm',
-            'userSection'
+            'userSection','viewType'
         ]),
     },
     methods:{
-
+        ...mapMutations(['setViewType']),
         OnClickTeachers(){
             if( this.tabTeachers ){
                 bus.$emit('CollapseTeachers');
@@ -106,9 +104,7 @@ export default {
             bus.$emit("OnClickEditCourse");
         },
         changeViewType(x){
-            localStorage.setItem('ViewType',x);
-            this.fetchViewType();
-            bus.$emit('SettingChanged','ViewType');
+            this.$store.dispatch('changeViewType',x)
         },
         fetchViewType(){
             let type = localStorage.getItem('ViewType');
