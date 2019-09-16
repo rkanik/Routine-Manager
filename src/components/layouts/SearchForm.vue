@@ -29,7 +29,7 @@
           <input
             type="text"
             class="form-control section"
-            placeholder="Enter Section"
+            placeholder="Section"
             v-model="formData.section"
           />
         </div>
@@ -63,7 +63,7 @@
           <div class="form-group">
             <button @click="onClickAdvFSeacrch(advFData)" class="sa btn btn-outline-dark">Search</button>
           </div>
-          <p class="small text-secondary">For retake section write R1, R2, R3 like this</p>
+          <p class="small text-secondary">For retake section enter R1, R2, R3 like this</p>
         </div>
       </div>
       <div class="more text-center overflow-hidden">

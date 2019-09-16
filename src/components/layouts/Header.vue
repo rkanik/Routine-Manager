@@ -1,5 +1,5 @@
 <template>
-    <div id="header" class="text-left">
+    <div id="header" class="bgMedium tPrimary text-left">
         <div class="container overflow-hidden position-relative h-100">
             <h4 class="pt-3 app-name">Routine Manager CSE <span class="beta orng-5">BETA{{version}}</span></h4>
             <div class="input-group" v-if="!isSignedIn" v-bind:class="{inputError:inputError}" >
@@ -34,35 +34,11 @@ export default {
             inputError:false
         }
     },
-    created(){
-
-        /** Fetch Theme **/
-        // this.FetchTheme();
-        // bus.$on('ThemeChanged',x=>{this.FixTheme(x)});
-
-        // bus.$on('signedData', data =>{this.isSignedIn=true;this.signedId=data.ID;});
-        // if( localStorage.isSignedIn ){
-        //     this.isSignedIn=true;
-        //     this.signedId=JSON.parse(localStorage.signedData).ID;
-        // }
-    },
     computed:{
         ...mapGetters(['isSignedIn','isLoading','userId']),
-
     },
     methods:{
         ...mapMutations(['onClickLogout']),
-
-        onTabItemSelected(x){
-            this.active = x ;
-            bus.$emit(x,x);
-        },
-        onClickMenuToggler(){
-            if( this.tabCollapsed ){
-                this.tabCollapsed=false;
-            }else(this.tabCollapsed=true)
-        },
-
         onKeyUp( event ){
             if(  this.inputId.trim() !== ''  ){
                 this.inputError = false
@@ -85,7 +61,6 @@ export default {
 <style lang="scss" scoped>
 #header{
     height: 4rem;overflow: hidden;
-    background-color: #191919;
     box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.2);
     .app-name{
         letter-spacing: 1px;

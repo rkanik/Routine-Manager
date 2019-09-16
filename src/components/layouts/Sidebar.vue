@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" v-bind:class="{collapsed:isSidebarCollapsed}">
+  <div class="sidebar bgSecondary tSecondary" v-bind:class="{collapsed:isSidebarCollapsed}">
     <div class="menu-toggler p-3">
       <div class="circle" @click="onclickSidebarToggler()">
         <s-toggler class="toggler" v-bind:data="{color:theme}"/>
@@ -19,9 +19,9 @@
         <img src="../../assets/svg/emptyroom.svg" class="icon">
         <p class="">Empty rooms</p>
       </router-link>
-      <router-link tag="li" to="/teachers">
+      <router-link tag="li" to="/teacher">
         <img src="../../assets/svg/teacher.svg"  class="icon">
-        <p class="">Teachers</p>
+        <p class="">Teacher</p>
       </router-link>
       <router-link tag="li" to="/qs">
         <img src="../../assets/svg/dashboard.svg" class="icon">
@@ -64,7 +64,7 @@ export default {
 
 <style lang="scss" scoped>
   .sidebar{
-    width: 14rem;background-color: #212121;
+    width: 14rem;
     height: 100vh;transition: width 0.3s ease-in-out;
     box-shadow: 0 0 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.2);
   }
@@ -100,7 +100,7 @@ export default {
       cursor: pointer;
       padding: 0.5rem 1.2rem;
       display: grid;overflow: hidden;
-      border-left: 4px solid rgba(0, 0, 0, 0);
+      border-left: 4px solid #212121;
       grid-template-columns: min-content auto;
       transition: background-color 0.3s,border-color 0.3s;
       .icon{
@@ -118,9 +118,9 @@ export default {
         font-size: 1em;
       }
     }
-    li:hover,.router-link-exact-active{
+    li:hover{
       background-color: #313131;
-      border-color: teal;
+      border-color: #313131;
     }
   }
 

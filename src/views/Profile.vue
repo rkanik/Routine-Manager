@@ -1,13 +1,8 @@
 <template>
   <div class="profile">
     <SignedBox/>
-    <TableView v-if="viewType=='table'" :routine='userRoutine' :slots='fullSlots' :aDays='assocDays'/>
-    <TabView  v-if="viewType=='tab'" :routine='userRoutine' :aDay='tabActiveDay' :assocDays='assocDays' :imgSrc='aImages' :rsDays='routineDays'/>
-    <!-- <div class="p-3">
-      <CardBar class="mb-4"/>
-      <Card class="float-left" v-bind:data="{img:'com_fun.jpg',title:'Computer fundamentals',time:'08:30-10:00',room:'315DT5',teacher:'Mousumi zaman bonny'}" />
-      <Card class="float-left ml-4" v-bind:data="{img:'bas_math.jpg',title:'Basic mathemetics',time:'08:30-10:00',room:'315DT5',teacher:'Zakia Zaman'}" />
-    </div> -->
+    <TableView v-if="viewType=='table' && userRoutine " :routine='userRoutine' :slots='fullSlots' :aDays='assocDays'/>
+    <TabView  v-if="viewType=='tab'" :routine='userRoutine' :aDay='tabActiveDay' :assocDays='assocDays' :rsDays='routineDays'/>
   </div>
 </template>
 

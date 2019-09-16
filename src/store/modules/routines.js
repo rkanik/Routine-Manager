@@ -1,11 +1,7 @@
 
-import rData from "../../../data/json/routines/summer2019/V3-2.json"
+import rData from "../../../data/json/routines/Fall2019/V1.json"
 import courses from "../../../data/json/courses/V1.json"
 import teachers from "../../../data/json/teachers/V1.json"
-import aImages from "../../../data/json/images/unsplash/array.json"
-let domain = "https://images.unsplash.com/";
-let getReqCode = "?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=100"
-let rIndex = Math.floor(Math.random()*(aImages.length-0+1)+0)
 
 
 const state = {
@@ -13,28 +9,31 @@ const state = {
     emptyRooms:rData.emptyRooms,
     labs:rData.labs,
 
-    userRoutine:undefined,
-    sRoutine:undefined,
-    tabActiveDay:'Sat',
+    userRoutine:{},
+    sRoutine:{},
+    tabActiveDay:'',
+    sActiveDay:'',
 
     fullSlots:["08:30-10:00","10:00-11:30","11:30-01:00","01:00-02:30","02:30-04:00","04:00-05:30"],
     shortSlots:["08:30","10:00","11:30","01:00","02:30","04:00"],
     fullDays:["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"],
     shortDays:["Sat","Sun","Mon","Tue","Wed","Thu","Fri"],
-    assocDays:{Sat:'Saturday',Sun:'Sunday',Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday'}
+    assocDays:{Sun:'Sunday',Mon:'Monday',Tue:'Tuesday',Wed:'Wednesday',Thu:'Thursday',Fri:'Friday',Sat:'Saturday'}
 }
 
 const getters = {
     userRoutine : state => state.userRoutine,
     sRoutine : state => state.sRoutine,
     routineDays : state => Object.keys(state.userRoutine),
+    sRoutineDays : state => Object.keys(state.sRoutine),
     fullSlots : state => state.fullSlots,
     shortSlots : state => state.shortSlots,
     fullDays : state => state.fullDays,
     shortDays : state => state.shortDays,
     assocDays : state => state.assocDays,
     tabActiveDay : state => state.tabActiveDay,
-    aImages : () => domain+aImages[rIndex]+getReqCode,
+    sActiveDay : state => state.sActiveDay,
+    noOfClassesInWeek : state => Object.keys(state.userRoutine).length
 }
 
 const mutations = {
@@ -64,6 +63,7 @@ const mutations = {
                 })
             }
         }
+        state.sActiveDay = Object.keys(routine)[0];
         state.sRoutine = routine;
     },
     changeRoutineFormat : ( state , type ) => {
@@ -77,22 +77,23 @@ const mutations = {
         }
     },
     onSelectedTab : ( state , day ) => {
-        state.tabActiveDay = day
+        state.tabActiveDay = state.sActiveDay = day
     },
     routineOnCreateApp : state => {
         if(sessionStorage.userRoutine){
+            state.tabActiveDay = ex.dayOfWeek();
             state.userRoutine=JSON.parse(sessionStorage.userRoutine)
         }
     },
     onClickSearch : ( state , data ) => {
+        state.sActiveDay = ex.dayOfWeek();
         let codes = ex.getCourseCodes( data.level , data.term );
         let mergedCodes = ex.getMergedCodes( codes , data.section.toUpperCase() )
         state.sRoutine = ex.getRoutine( mergedCodes , data );
     },
     initUserRoutine : (state , data ) => {
-        let mergedCodes = ex.getMergedCodes( data.codes.regular , data.section )
-        if( data.codes.retake.length>0){mergedCodes = mergedCodes.concat(data.codes.retake)}
-        state.userRoutine =  ex.getRoutine( mergedCodes , data );
+        console.log('initUserRoutine=>',data);
+        state.userRoutine =  ex.getRoutine( data.courses , data );
         sessionStorage.userRoutine = JSON.stringify(state.userRoutine)
     },
 }
@@ -102,12 +103,13 @@ const actions = {
         await commit('changeRoutineFormat',type)
         commit('setViewType',type);
     },
-    async initSignup({dispatch} , formData ){
-        let codes = ex.getCourseCodes( formData.level , formData.term )
-        let signupData = {id:formData.id,name:formData.name,
-            email:formData.email,level:formData.level,
-            term:formData.term,section:formData.section.toUpperCase(),
-            codes:{regular:codes,retake:[]}
+    async initSignup({dispatch} , data ){
+        let codes = ex.getCourseCodes( data.level , data.term )
+        data.section = data.section.toUpperCase();
+        let signupData = {id:data.id,name:data.name,
+            email:data.email,level:data.level,
+            term:data.term,section:data.section,
+            courses:ex.getMergedCodes(codes,data.section)
         }
         await dispatch('apiSignupUser',signupData.id);
         dispatch('firebaseSignupUser',signupData);
@@ -115,15 +117,20 @@ const actions = {
 }
 
 const ex = {
-    getRoutine( mergedCodes , data ) {
-        let routine = {};
+    dayOfWeek(){
+        return Object.keys(state.assocDays)[new Date().getDay()];
+    },
+    getRoutine( courses , data ) {
+        console.log('getRoutine=>',data);
+        let routine = {};let viewType = localStorage.viewType;
         for( let day in state.mRoutines ){
             for( let slot in state.mRoutines[day] ){
                 let psRoutine = state.mRoutines[day][slot];
                 psRoutine.forEach( rou => {
-                    if( mergedCodes.includes(rou.Course)){
+                    if( courses.includes(rou.Course)){
                         let r = rou;r.Day = day;r.Time = slot;
-                        let viewType = localStorage.viewType;
+                        r.Title = ex.getCourseTitle( data.level , data.term , rou.Course.split('(')[0] )
+                        r.Name = ex.getTeacherName( r.Teacher );
                         if( viewType === 'table' ){
                             let index = state.shortSlots.indexOf(slot)
                             if( routine[day] ){
@@ -134,8 +141,6 @@ const ex = {
                                 routine[day].splice(index,1,r);
                             }
                         }else if( viewType === 'tab' ){
-                            r.Title = ex.getCourseTitle( data.level , data.term , rou.Course.split('(')[0] )
-                            r.Name = ex.getTeacherName( r.Teacher );
                             if( routine[day] ){routine[day].push(r);
                             }else{routine[day]=[];routine[day].push(r)}
                         }
@@ -143,10 +148,14 @@ const ex = {
                 });
             }
         }
+        if(viewType==='tab'&&routine[ex.dayOfWeek()]===undefined){ex.pushEmptyRoutine(routine)}
         return routine;
     },
-
+    pushEmptyRoutine(routine){
+        return routine[ex.dayOfWeek()]=[{Title:'There is no class today!',m:'Enjoy your day'}]
+    },
     tabToTable( state , routine ){
+        if(routine[ex.dayOfWeek()][0].m){delete routine[ex.dayOfWeek()]}
         for(let day in routine){
             let temp = routine[day];routine[day]=[];
             let c=0;while(c<6){routine[day].push('');c++}
@@ -159,6 +168,7 @@ const ex = {
     },
     tableToTab( routine ){
         for(let day in routine){routine[day]=routine[day].filter(r=>r!=='')}
+        if(routine[ex.dayOfWeek()]===undefined){ex.pushEmptyRoutine(routine)}
         return routine
     },
     getTeacherName( initial ){

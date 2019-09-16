@@ -2,17 +2,16 @@
     <div class="card p-0 text-left">
         <div class="card-top">
             <h5 class="card-title mb-0">{{data.Title}}</h5>
-            <div class="card-overlay"></div>
-            <img :src='imgSrc' class="card-img-top">
         </div>
         <div class="card-body pt-2">
-            <p class="lead"><span class="accent">Code: </span>{{data.Course}}</p>
-            <p class="lead"><span class="accent">Time: </span>{{data.Time}}</p>
-            <p class="lead"><span class="accent">Room: </span>{{data.Room}}</p>
+            <p class="lead" v-if="data.Course"><span class="accent">Code: </span>{{data.Course}}</p>
+            <p class="lead" v-if="data.Time"><span class="accent">Time: </span>{{data.Time}}</p>
+            <p class="lead" v-if="data.Room"><span class="accent">Room: </span>{{data.Room}}</p>
             <hr>
-            <span class="text-info">Teacher</span>
-            <p class="lead"><span class="accent">Initial: </span>{{data.Teacher}}</p>
-            <p class="lead" v-if="data.Teacher"><span class="accent">Name: </span>{{data.Name}}</p>
+            <span class="text-info" v-if="data.Teacher||data.Name">Teacher</span>
+            <p class="lead" v-if="data.Teacher"><span class="accent">Initial: </span>{{data.Teacher}}</p>
+            <p class="lead" v-if="data.Name"><span class="accent">Name: </span>{{data.Name}}</p>
+            <p class="lead" v-if="data.m">{{data.m}}</p>
         </div>
     </div>
 </template>
@@ -21,17 +20,14 @@
 import { mapGetters } from 'vuex';
 export default {
     name:'card',
-    props:{
-        data:Object,
-        imgSrc:String
-    },
+    props:['data'],
 }
 </script>
 
 <style lang="scss" scoped>
     .card{
         width: 16rem !important;
-        min-height: 20rem;
+        height: 20rem;
         background-color: #212121;
         border: none  !important;
         box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.2);

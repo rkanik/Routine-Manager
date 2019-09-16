@@ -2,11 +2,19 @@
     <div id="Settings">
         <div class="set-group rounded">
             <div class="container">
-                <p class="set-group-title text-info mt-2 mb-4">Basic settings</p>
+                <p class="set-group-title tAccent mt-2 mb-4">Basic settings</p>
                 <div class="row pb-3 mt-2">
                     <label class="text-accent col m-0">Light theme</label><br>
                     <div class="switch-con col">
                         <c-switch class="float-right" :name='"theme"' :checked='false'/>
+                    </div>
+                </div>
+                <div class="row pb-3 mt-4">
+                    <label class="text-accent col m-0">Accent colors</label><br>
+                    <div class="switch-con col">
+                        <Accents class="float-right"/>
+                        <!-- <button @click="onChangeAccent('teal')">teal</button>
+                        <button @click="onChangeAccent('orange')">orange</button> -->
                     </div>
                 </div>
                 <div class="row pb-3 mt-3">
@@ -35,15 +43,19 @@
 <script>
 
 import Switch from "../components/switch/Switch";
-import { mapGetters } from 'vuex';
+import Accents from "../components/layouts/Accents";
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
     name:'Settings',
-    components:{'c-switch':Switch},
+    components:{'c-switch':Switch,Accents},
     data(){return{
         tabActive:'Table',
         lightTheme:true,
     }},
+    methods:{
+        ...mapMutations(['onChangeAccent'])
+    },
     computed: {
         ...mapGetters(['isSidebarCollapsed'])
     },

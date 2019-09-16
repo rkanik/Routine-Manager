@@ -1,6 +1,6 @@
 <template>
   <label class="switch">
-    <input type="checkbox" v-model="settingBols[name]"/>
+    <input type="checkbox" v-model="settingBools[name]" @change="onChangeSwitch({name,$event})"/>
     <span></span>
   </label>
 </template>
@@ -10,9 +10,16 @@ import { mapMutations, mapGetters } from 'vuex';
 export default {
   name:'c-switch',
   props:{name:String, checked:Boolean},
+  data() {
+    return {
+      isChecked:this.checked
+    }
+  },
+  computed: {
+    ...mapGetters(['settingBools'])
+  },
   methods:{
     ...mapMutations(['onChangeSwitch']),
-    ...mapGetters(['settingBols'])
   }
 }
 </script>

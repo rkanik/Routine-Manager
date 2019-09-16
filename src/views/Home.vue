@@ -1,14 +1,13 @@
 <template>
   <div class="home">
     <s-form />
-    <TableView v-if="viewType=='table' && sRoutine != undefined" :routine="sRoutine" :slots="fullSlots" :aDays="assocDays" />
+    <TableView v-if="viewType=='table'" :routine="sRoutine" :slots="fullSlots" :aDays="assocDays" />
     <TabView
-      v-if="viewType=='tab' && sRoutine != undefined"
+      v-if="viewType=='tab'"
       :routine="sRoutine"
-      :aDay="tabActiveDay"
+      :aDay="sActiveDay"
       :assocDays="assocDays"
-      :imgSrc="aImages"
-      :rsDays="routineDays"
+      :rsDays="sRoutineDays"
     />
   </div>
 </template>
@@ -33,10 +32,9 @@ export default {
       "sRoutine",
       "fullSlots",
       "assocDays",
-      "tabActiveDay",
-      "routineDays",
+      'sRoutineDays',
       "viewType",
-      "aImages"
+      'sActiveDay'
     ])
   }
 };

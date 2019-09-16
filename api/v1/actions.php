@@ -93,6 +93,7 @@ class Actions {
                 $stmt -> bindParam( $key , $value );
             }
             $stmt->execute();
+            return $_POST;
         }else{
             $this->updateLastVisitedByToken($response->uToken);
             return array('error'=>true,"message"=>'Duplicate user',"uToken"=>$response->uToken);

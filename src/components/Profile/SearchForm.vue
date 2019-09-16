@@ -106,24 +106,6 @@ export default {
     }
 }
 
-.light-colors{
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
-    .form-group{
-        .form-control {
-            background-color: transparent;
-            border-color: #e0e0e0;
-            color: #313131;
-            option{
-                background-color: white;
-            }
-        }
-    }
-    .btn-go {
-        border-color: #e0e0e0;
-    }
-}
-
 @media (max-width: 576px) {
     .search-form{
         .col-md-4,.col-md-2{

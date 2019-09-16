@@ -1,16 +1,16 @@
 <template>
-    <div class="EditCourse" v-bind:class="{'light-colors':lightTheme}">
+    <div class="EditCourse">
         <div class="overlay show"></div>
-        <div class="modal">
-            <img class="close" @click="OnClickClose()" src="../../../assets/svg/close.svg">
+        <div class="modal bgSecondary">
+            <img class="close" @click="hideEditCourse" src="../../assets/svg/close.svg">
             <div class="content">
                 <div class="text-center">
-                    <p class="lead m-0 mt-3">Manage your courses</p>
-                    <h3 class="lead-2 grey-3">Add or Remove your courses</h3>
+                    <p class="lead m-0 mt-3 tPrimary">Manage your courses</p>
+                    <h3 class="lead-2 tSecondary">Add or Remove your courses</h3>
                 </div>
                 <hr>
                 <div class="form-container">
-                    <form class="form">
+                    <form class="form tPrimary">
                         <div class="line row" v-for="(course,index) in Courses" v-bind:key="index">
                             <div class="col col-md-1">
                                 <div class="line-no">
@@ -19,22 +19,22 @@
                             </div>
                             <div class="col col-md-6">
                                 <div class="form-group">
-                                    <input type="text" v-model="course.Code" class="form-control" placeholder="Course code" >
+                                    <input type="text" v-model="course.code" class="form-control" placeholder="Course code" >
                                 </div>
                             </div>
                             <div class="col col-md-4">
                                 <div class="form-group">
-                                    <input type="text" v-model="course.Section" class="form-control" placeholder="Section" >
+                                    <input type="text" v-model="course.section" class="form-control" placeholder="Section" >
                                 </div>
                             </div>
                             <div class="col col-md-1">
                                 <div @click="onClickDelete(index)" class="close-box">
-                                    <img src="../../../assets/svg/close.svg">
+                                    <img src="../../assets/svg/close.svg">
                                 </div>
                             </div>
                         </div>
                         <div @click="onClickAddNew()" class="add-new">
-                            <img src="../../../assets/svg/add.svg">
+                            <img src="../../assets/svg/add.svg">
                         </div>
                         <p class="error">{{errorMassage}}</p>
                     </form>
@@ -46,47 +46,44 @@
 </template>
 
 <script>
-
-import {bus} from "../../../main";
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
     name:'EditCourseModal',
+    props:['courses'],
     data(){
         return{
-            Courses:[],
+            Courses:this.courses,
             errorMassage:'',
             signedId:'',
             lightTheme:false
         }
     },
-    created(){
-        this.FetchTheme()
-        this.getFormattedCourses()
-    },
     methods:{
-        OnClickClose(){bus.$emit('CloseEditCourse')},
+        ...mapMutations(['hideEditCourse']),
         getFormattedCourses(){
             let signedData = JSON.parse(localStorage.signedData);
             this.signedId=signedData.ID;
             signedData.Courses.forEach(course=>{this.Courses.push({Code:course.split('(')[0],Section:course.split('(')[1].split(')')[0]});})
         },
         onClickSave(){
-            if(!this.checkIfHasAnyError()){this.updateCourses()
+            if(!this.checkIfHasAnyError()){
+                this.$store.dispatch('updateCourses',this.ReFormatCourses(this.Courses))
             }else{this.errorMassage='Empty field error!'}
         },
-        updateCourses(){
-            bus.$emit('UpdatedCourses',this.ReFormatCourses())
-        },
+        // updateCourses(){
+        //     bus.$emit('UpdatedCourses',this.ReFormatCourses())
+        // },
         ReFormatCourses(){
             let reFormatted = this.Courses.map( el =>{
-                return el.Code.toUpperCase()+"("+el.Section.toUpperCase()+')';
+                return el.code.toUpperCase()+"("+el.section.toUpperCase()+')';
             })
             return reFormatted;
         },
         checkIfHasAnyError(){
             let isError = false ;
             this.Courses.forEach( el => {
-                if( el.Code.trim() === '' || el.Section.trim() === '' ){
+                if( el.code.trim() === '' || el.section.trim() === '' ){
                     isError = true ;
                 }
             })
@@ -102,27 +99,17 @@ export default {
         },
         onClickAddNew(){
             let last_el = this.Courses[this.Courses.length-1];
-            if(last_el.Code.trim()!=='' && last_el.Section.trim()!==''){
+            if(last_el.code.trim()!=='' && last_el.section.trim()!==''){
                 if(this.Courses.length >= 8){
                     this.errorMassage='Maximum course level has reached';
                 }else{
-                    this.Courses.push({Code:'',Section:''});
+                    this.Courses.push({code:'',section:''});
                     this.errorMassage=''
                 }
             }else{
                 this.errorMassage="You can't leave these field empty!"
             }
         },
-        FixTheme(x){
-            this.lightTheme=x;
-            localStorage.setItem('Theme',x);
-        },
-        FetchTheme(){
-            if(localStorage.getItem('Theme')!==undefined){
-                if(localStorage.getItem('Theme')==='true'){
-                this.FixTheme(true)}else{this.FixTheme(false);}   
-            }else{this.FixTheme(false)}
-        }
     }
 }
 </script>
@@ -136,14 +123,13 @@ export default {
 .lead-2{font-weight:400}
 .modal{
     position: fixed;
-    height: auto;
-    min-height: 30rem;
+    height: auto;min-height: 80vh;
     transform: translate(-50%,-50%);
     border-radius: 0.5rem;
     padding: 1rem;top:50%;left:50%;
     display:block;width: 32rem;
     padding-bottom: 4rem;
-    z-index: 11;background-color: #313131;
+    z-index: 20;
     .form-container{
         padding: 0 4rem;
     }

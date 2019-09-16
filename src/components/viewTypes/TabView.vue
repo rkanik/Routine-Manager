@@ -7,7 +7,6 @@
                 v-for="(rou, i) in routine[aDay]"
                 :key="i"
                 :data="rou"
-                :imgSrc="imgSrc"
                 class="float-left mr-3 mb-3"
             />
       </div>
@@ -25,7 +24,6 @@ export default {
   props: {
     routine: Object,
     aDay: String,
-    imgSrc: String,
     rsDays:Array,
     assocDays:Object
   },
