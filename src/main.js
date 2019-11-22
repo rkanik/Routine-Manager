@@ -8,7 +8,6 @@ Vue.config.productionTip = false
 import "bootstrap/dist/css/bootstrap.css";
 
 new Vue({
-  router,
-  store,
+  router, store,
   render: h => h(App)
 }).$mount('#app')

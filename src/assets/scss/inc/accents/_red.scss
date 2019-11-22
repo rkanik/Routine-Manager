@@ -1,0 +1,27 @@
+
+@import "../colors/colors" ;
+
+.red {
+   .ta {
+      color: $red500;
+   }
+   .bga {
+      background-color: $red500;
+   }
+   .bra {
+      border-color: $red500 !important;
+   }
+   .router-link-exact-active {
+      border-color: $red500 !important;
+   }
+   .table-view {
+      thead {
+         th:last-child {
+            border-right-color: $red500;
+         }
+         th:first-child {
+            border-left: 1px solid $red500;
+         }
+      }
+   }
+}

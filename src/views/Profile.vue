@@ -1,49 +1,39 @@
 <template>
-  <div class="profile">
-    <SignedBox/>
-    <TableView v-if="viewType=='table' && userRoutine " :routine='userRoutine' :slots='fullSlots' :aDays='assocDays'/>
-    <TabView  v-if="viewType=='tab'" :routine='userRoutine' :aDay='tabActiveDay' :assocDays='assocDays' :rsDays='routineDays'/>
-  </div>
+	<div class="profile">
+		<profile-overview v-if="isDataLoaded" :theme="theme" />
+		<quick-buttons v-if="isDataLoaded" />
+		<routine-table
+			:v-if="isDataLoaded&&studentsRoutine!=null"
+			:routine="studentsRoutine"
+			:slots="fullSlots"
+			:aDays="assocDays"
+		/>
+	</div>
 </template>
 
 <script>
+	/** Components */
+	import Overview from "../components/Profile/Overview";
+	import QuickButtons from "../components/Profile/QuickButtons";
+	import TableView from "../components/viewTypes/TableView";
+	import TabView from "../components/viewTypes/TabView";
 
-/** Components */
-import SignedBox from '../components/Profile/SignedBox';
-import TableView from "../components/viewTypes/TableView";
-import TabView from "../components/viewTypes/TabView";
+	import router from "../routes/";
 
-import { mapMutations, mapGetters } from 'vuex';
+	import { mapMutations, mapGetters } from "vuex";
 
-export default {
-  name: 'profile',
-  components: {
-    SignedBox,TableView,TabView,
-  },
-  created(){
-    this.onCreateProfile();
-  },
-  data(){
-    return{
-      signedData:{
-        "Courses":["CSE421(I)","CSE422(I)","CSE423(I)","CSE450(I)","CSE499(I)","ACT301(C)"],"CreatedAt":{"seconds":1561059093,"nanoseconds":136000000},"Email":"Rasel15-7040@diu.edu.bd","ID":"161-15-7040","LastVisited":{"seconds":1566930210,"nanoseconds":294000000},"Level":"L4","Name":"Md Rasel Khandkar","Section":"I","Term":"T2"
-      },
-    }
-  },
-  methods:{
-    ...mapMutations(['onCreateProfile']),
-  },
-  computed:{
-    ...mapGetters([
-      'userRoutine','viewType','fullSlots','assocDays',
-      'tabActiveDay','aImages','routineDays'])
-  }
-}
+	export default {
+		name: "profile",
+		components: {
+			"profile-overview": Overview,
+			"quick-buttons": QuickButtons,
+			"routine-table": TableView,
+			TabView
+		},
+		computed: {
+			...mapGetters(["signedIn", "theme"]),
+			...mapGetters("users", ["isDataLoaded"]),
+			...mapGetters("routines", ["studentsRoutine", "fullSlots", "assocDays"])
+		}
+	};
 </script>
-
-<style lang="scss">
-  .profile{
-    height: calc(100vh - 4rem);
-    overflow: auto;
-  }
-</style>

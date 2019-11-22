@@ -1,0 +1,49 @@
+
+@import "../colors/colors";
+
+.dark {
+   color: #fafafa;
+   font-weight: 300;
+
+   /** Background colors */
+   .bgp {
+      background-color: $grey20;
+   }
+   .bgs {
+      background-color: $grey28;
+   }
+   .bgm {
+      background-color: $grey25;
+   }
+   .bgmo {
+      background-color: $grey31;
+   }
+   .bga {
+      background-color: $grey900;
+   }
+
+   .br-dark{
+      border-color: $grey31 !important;
+   }
+
+   /** Foreground colors*/
+   .tp {
+      color: $grey200 !important;
+   }
+   .ts {
+      color: $grey500;
+   }
+   .tm {
+      color: $grey400;
+   }
+
+   
+   .quick-buttons {
+      button {
+         border-color: $grey800 !important;
+      }
+      button:hover {
+         border-color: $grey700 !important;
+      }
+   }
+}

@@ -6,8 +6,8 @@
                     <div class="col-box bgSecondary">
                         <label class="tAccent">Overview</label>
                         <p class="lead tMedium">
-                            <span>Course: </span><strong>{{noOfCourses}}</strong><span> | </span>
-                            <span>Class: </span><strong>{{noOfClassesInWeek}} days</strong>
+                            <span>Course: </span><strong></strong><span> | </span>
+                            <span>Class: </span><strong> days</strong>
                         </p>
                     </div>
                 </div>
@@ -15,14 +15,14 @@
                 <div class="col">
                     <div class="col-box bgSecondary">
                         <label class="tAccent">Name</label>
-                        <p class="lead tMedium">{{userName}}</p>
+                        <p class="lead tMedium">{{studentName}}</p>
                     </div>
                 </div>
 
-                <div class="col" v-if="userEmail!=''">
+                <div class="col" v-if="studentEmail">
                     <div class="col-box bgSecondary">
                         <label class="tAccent">Email</label>
-                        <p class="lead tMedium" >{{userEmail}}</p>
+                        <p class="lead tMedium" >{{studentEmail}}</p>
                     </div>
                 </div>
                 
@@ -30,9 +30,9 @@
                     <div class="col-box bgSecondary">
                         <label class="tAccent">Semester info</label>
                         <p class="lead tMedium">
-                            <span>Level: </span><strong>{{userLevel}}</strong><span> | </span>
-                            <span>Term: </span><strong>{{userTerm}}</strong><span> | </span>
-                            <span>Section: </span><strong>{{userSection}}</strong>
+                            <span>Level: </span><strong>{{studentLevel}}</strong><span> | </span>
+                            <span>Term: </span><strong>{{studentTerm}}</strong><span> | </span>
+                            <span>Section: </span><strong>{{studentSection}}</strong>
                         </p>
                     </div>
                 </div>
@@ -42,8 +42,8 @@
             <div class="quickSettings text-center">
                 <div class="btn-con">
                     <button class="br bgPrimary tSecondary" @click="showEditCourse">Edit Course</button>
-                    <button class="br bgPrimary tSecondary" @click="changeViewType('table')" :class="{active:viewType=='table'}">Table View</button>
-                    <button class="br bgPrimary tSecondary" @click="changeViewType('tab')" :class="{active:viewType=='tab'}">Card View</button>
+                    <button class="br bgPrimary tSecondary" @click="changeViewType('table')">Table View</button>
+                    <button class="br bgPrimary tSecondary" @click="changeViewType('tab')">Card View</button>
                     <button class="br bgPrimary tSecondary" @click="OnClickUpdateInfo()">Update info</button>
                     <button class="br bgPrimary tSecondary" @click="OnClickTeachers()" v-bind:class="{active:tabTeachers}">Teachers</button>
                     <button class="br bgPrimary tSecondary active" @click="ChangeTheme()">{{theme}}</button>
@@ -78,8 +78,9 @@ export default {
         ...mapGetters([
             'userName','userEmail',
             'userLevel','userTerm','noOfCourses',
-            'userSection','viewType','noOfClassesInWeek'
+            'userSection','noOfClassesInWeek'
         ]),
+        ...mapGetters('users',['studentName','studentEmail','studentLevel','studentTerm','studentSection'])
     },
     methods:{
         ...mapMutations(['setViewType','showEditCourse']),

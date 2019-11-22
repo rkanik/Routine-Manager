@@ -28,9 +28,19 @@ export default new Router({
       component: () => import('../views/EmptyRoom.vue')
     },
     {
+      path: '/questions',
+      name: 'questions',
+      component: () => import('../views/Questions.vue')
+    },
+    {
       path: '/settings',
       name: 'settings',
       component: () => import('../views/Settings.vue')
+    },
+    {
+      path: '/builder',
+      name: 'builder',
+      component: () => import('../views/Builder.vue')
     },
     {
       path:'*',

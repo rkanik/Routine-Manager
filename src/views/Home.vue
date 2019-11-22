@@ -1,20 +1,16 @@
 <template>
   <div class="home">
-    <s-form />
-    <TableView v-if="viewType=='table'" :routine="sRoutine" :slots="fullSlots" :aDays="assocDays" />
-    <TabView
-      v-if="viewType=='tab'"
-      :routine="sRoutine"
-      :aDay="sActiveDay"
-      :assocDays="assocDays"
-      :rsDays="sRoutineDays"
-    />
+    <search-form />
+    <!-- <search-form-alt/> -->
+    <TableView v-if="searchRoutine!==null" :routine="searchRoutine" :slots="fullSlots" :aDays="assocDays" />
+    <TabView v-if="1>2"/>
   </div>
 </template>
 
 <script>
 /** Components */
 import SearchForm from "../components/layouts/SearchForm";
+import SearchForm2 from "../components/custom-forms/SearchForm";
 import TableView from "../components/viewTypes/TableView";
 import TabView from "../components/viewTypes/TabView";
 
@@ -23,19 +19,13 @@ import { mapMutations, mapGetters } from "vuex";
 export default {
   name: "home",
   components: {
-    "s-form": SearchForm,
+    "search-form": SearchForm,
+    "search-form-alt": SearchForm2,
     TableView,
     TabView
   },
   computed: {
-    ...mapGetters([
-      "sRoutine",
-      "fullSlots",
-      "assocDays",
-      'sRoutineDays',
-      "viewType",
-      'sActiveDay'
-    ])
+    ...mapGetters('routines',["searchRoutine","fullSlots","assocDays","fullDays"]),
   }
 };
 </script>

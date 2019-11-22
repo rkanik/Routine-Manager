@@ -1,0 +1,27 @@
+@import "../colors/colors";
+
+.teal {
+   .ta {
+      color: $teal500;
+   }
+   .bga {
+      background-color: $teal500;
+   }
+   .bra {
+      border-color: $teal500 !important;
+   }
+   ::-webkit-scrollbar-thumb:hover {
+      background: $teal500;
+   }
+   .router-link-exact-active {
+      border-color: $teal500 !important;
+   }
+   .table-view thead {
+      th:last-child {
+         border-color: $teal500 !important;
+      }
+      th:first-child {
+         border-left: 1px solid $teal500 !important;
+      }
+   }
+}

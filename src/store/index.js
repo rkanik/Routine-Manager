@@ -2,15 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 /** Modules */
-import ui from './modules/ui';
-import api from "./modules/api";
-import firebase from "./modules/firebase";
+import users from './modules/users';
 import routines from './modules/routines';
+import global from "./modules/global"
+import teacher from "./modules/teacher"
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  modules:{
-    ui , api , firebase , routines 
-  }
+  modules: { global, routines, users, teacher},
+
 })

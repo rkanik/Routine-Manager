@@ -1,0 +1,40 @@
+
+@import "../colors/colors";
+
+.light {
+   color: #212121;
+   font-weight: 400;
+
+   /** Background colors */
+   .bgp {
+      background-color: $grey200;
+   }
+   .bgs {
+      background-color: white;
+   }
+   .bgm {
+      background-color: $grey50;
+   }
+   .bgmo {
+      background-color: white;
+   }
+
+   /** Foreground colors*/
+   .tp {
+      color: $grey900 !important;
+   }
+   .ts {
+      color: $grey800 !important;
+   }
+   .tm {
+      color: $grey31;
+   }
+   .quick-buttons {
+      button {
+         border-color: $grey400 !important;
+      }
+      button:hover {
+         border-color: $grey500 !important;
+      }
+   }
+}
